@@ -109,9 +109,9 @@ msg_ok "Installed Docker $DOCKER_LATEST_VERSION"
 msg_info "Installing Docker bash completion"
 # if ! complete -p docker
 mkdir -p /etc/bash_completion.d
-curl -XGET https://raw.githubusercontent.com/docker/cli/master/contrib/completion/bash/docker > /etc/bash_completion.d/docker
+curl -sXGET https://raw.githubusercontent.com/docker/cli/master/contrib/completion/bash/docker > /etc/bash_completion.d/docker
 SHELL_CONFIG=$HOME/.bashrc
-cat >$SHELL_CONFIG <<'EOF'
+cat >>$SHELL_CONFIG <<'EOF'
 if ! shopt -oq posix; then
   if [ -f /usr/share/bash-completion/bash_completion ]; then
     . /usr/share/bash-completion/bash_completion
@@ -120,6 +120,7 @@ if ! shopt -oq posix; then
   fi
 fi
 EOF
+msg_ok "Installed Docker bash completion"
 
 # read -r -p "Would you like to add Portainer? <y/N> " prompt
 # if [[ $prompt == "y" || $prompt == "Y" || $prompt == "yes" || $prompt == "Yes" ]]; then
