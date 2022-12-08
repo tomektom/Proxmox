@@ -83,6 +83,7 @@ msg_ok "Updated Container OS"
 msg_info "Installing Dependencies"
 apt-get install -y curl &>/dev/null
 apt-get install -y sudo &>/dev/null
+apt-get install -y fuse-overlayfs &>/dev/null
 msg_ok "Installed Dependencies"
 
 get_latest_release() {
@@ -90,7 +91,7 @@ get_latest_release() {
 }
 
 DOCKER_LATEST_VERSION=$(get_latest_release "moby/moby")
-PORTAINER_LATEST_VERSION=$(get_latest_release "portainer/portainer")
+# PORTAINER_LATEST_VERSION=$(get_latest_release "portainer/portainer")
 DOCKER_COMPOSE_LATEST_VERSION=$(get_latest_release "docker/compose")
 
 msg_info "Installing Docker $DOCKER_LATEST_VERSION"
@@ -104,26 +105,26 @@ EOF
 sh <(curl -sSL https://get.docker.com) &>/dev/null
 msg_ok "Installed Docker $DOCKER_LATEST_VERSION"
 
-read -r -p "Would you like to add Portainer? <y/N> " prompt
-if [[ $prompt == "y" || $prompt == "Y" || $prompt == "yes" || $prompt == "Yes" ]]; then
-  PORTAINER="Y"
-else
-  PORTAINER="N"
-fi
+# read -r -p "Would you like to add Portainer? <y/N> " prompt
+# if [[ $prompt == "y" || $prompt == "Y" || $prompt == "yes" || $prompt == "Yes" ]]; then
+#   PORTAINER="Y"
+# else
+#   PORTAINER="N"
+# fi
 
-if [[ $PORTAINER == "Y" ]]; then
-  msg_info "Installing Portainer $PORTAINER_LATEST_VERSION"
-  docker volume create portainer_data >/dev/null
-  docker run -d \
-    -p 8000:8000 \
-    -p 9000:9000 \
-    --name=portainer \
-    --restart=always \
-    -v /var/run/docker.sock:/var/run/docker.sock \
-    -v portainer_data:/data \
-    portainer/portainer-ce:latest &>/dev/null
-  msg_ok "Installed Portainer $PORTAINER_LATEST_VERSION"
-fi
+# if [[ $PORTAINER == "Y" ]]; then
+#   msg_info "Installing Portainer $PORTAINER_LATEST_VERSION"
+#   docker volume create portainer_data >/dev/null
+#   docker run -d \
+#     -p 8000:8000 \
+#     -p 9000:9000 \
+#     --name=portainer \
+#     --restart=always \
+#     -v /var/run/docker.sock:/var/run/docker.sock \
+#     -v portainer_data:/data \
+#     portainer/portainer-ce:latest &>/dev/null
+#   msg_ok "Installed Portainer $PORTAINER_LATEST_VERSION"
+# fi
 
 read -r -p "Would you like to add Docker Compose? <y/N> " prompt
 if [[ $prompt == "y" || $prompt == "Y" || $prompt == "yes" || $prompt == "Yes" ]]; then

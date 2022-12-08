@@ -248,6 +248,14 @@ function advanced_settings() {
       echo -e "${DGN}Enable Root SSH Access: ${BGN}No${CL}"
       SSH="no"
   fi
+
+# todo pytanie o startowanie z systemem
+  if (whiptail --title "START ON BOOT" --yesno "Start container on boot?" --no-button Do-Over 10 58); then
+    ONBOOT="1"
+  else
+    ONBOOT="0"
+  fi
+
   if (whiptail --title "ADVANCED SETTINGS COMPLETE" --yesno "Ready to create ${APP} LXC?" --no-button Do-Over 10 58); then
     echo -e "${RD}Creating a ${APP} LXC using the above advanced settings${CL}"
   else
@@ -288,13 +296,13 @@ export PCT_OPTIONS="
   $SD
   $NS
   -net0 name=eth0,bridge=$BRG$MAC,ip=$NET$GATE$VLAN
-  -onboot 1
+  -onboot $ONBOOT
   -cores $CORE_COUNT
   -memory $RAM_SIZE
   -unprivileged $CT_TYPE
   $PW
 "
-bash -c "$(wget -qLO - https://raw.githubusercontent.com/tteck/Proxmox/main/ct/create_lxc.sh)" || exit
+bash -c "$(wget -qLO - https://raw.githubusercontent.com/tomektom/Proxmox/main/ct/create_lxc.sh)" || exit
 LXC_CONFIG=/etc/pve/lxc/${CTID}.conf
 cat <<EOF >>$LXC_CONFIG
 lxc.cgroup2.devices.allow: a
@@ -303,7 +311,7 @@ EOF
 msg_info "Starting LXC Container"
 pct start $CTID
 msg_ok "Started LXC Container"
-lxc-attach -n $CTID -- bash -c "$(wget -qLO - https://raw.githubusercontent.com/tteck/Proxmox/main/setup/$var_install.sh)" || exit
+lxc-attach -n $CTID -- bash -c "$(wget -qLO - https://raw.githubusercontent.com/tomektom/Proxmox/main/setup/$var_install.sh)" || exit
 IP=$(pct exec $CTID ip a s dev eth0 | sed -n '/inet / s/\// /p' | awk '{print $2}')
 pct set $CTID -description "# ${APP} LXC
 ### https://tteck.github.io/Proxmox/
