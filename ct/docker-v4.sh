@@ -249,8 +249,7 @@ function advanced_settings() {
       SSH="no"
   fi
 
-# todo pytanie o startowanie z systemem
-  if (whiptail --title "START ON BOOT" --yesno "Start container on boot?" --no-button Do-Over 10 58); then
+  if (whiptail --title "START ON BOOT" --yesno "Start container on boot?" 10 58); then
     ONBOOT="1"
   else
     ONBOOT="0"

@@ -84,6 +84,7 @@ msg_info "Installing Dependencies"
 apt-get install -y curl &>/dev/null
 apt-get install -y sudo &>/dev/null
 apt-get install -y fuse-overlayfs &>/dev/null
+apt-get install -y bash-completion &>/dev/null
 msg_ok "Installed Dependencies"
 
 get_latest_release() {
@@ -104,6 +105,21 @@ cat >$DOCKER_CONFIG_PATH <<'EOF'
 EOF
 sh <(curl -sSL https://get.docker.com) &>/dev/null
 msg_ok "Installed Docker $DOCKER_LATEST_VERSION"
+
+msg_info "Installing Docker bash completion"
+# if ! complete -p docker
+mkdir -p /etc/bash_completion.d
+curl -XGET https://raw.githubusercontent.com/docker/cli/master/contrib/completion/bash/docker > /etc/bash_completion.d/docker
+SHELL_CONFIG=$HOME/.bashrc
+cat >$SHELL_CONFIG <<'EOF'
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+  fi
+fi
+EOF
 
 # read -r -p "Would you like to add Portainer? <y/N> " prompt
 # if [[ $prompt == "y" || $prompt == "Y" || $prompt == "yes" || $prompt == "Yes" ]]; then
