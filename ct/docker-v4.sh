@@ -271,7 +271,7 @@ function start_script() {
 clear
 start_script
 if [ "$CT_TYPE" == "1" ]; then
-  FEATURES="nesting=1,keyctl=1"
+  FEATURES="nesting=1,keyctl=1,fuse=1,mknod=1"
 else
   FEATURES="nesting=1"
 fi
